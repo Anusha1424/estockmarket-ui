@@ -2,15 +2,15 @@ const NavItems = () => {
   return [
     {
       title: 'home',
-      to: '/home',
+      to: '/',
       htmlBefore: '<i class="material-icons">edit</i>',
-      htmlAfter: '',
+      htmlAfter: ''
     },
     {
       title: 'Top Referrals',
       htmlBefore: '<i class="material-icons">vertical_split</i>',
-      to: '/topreferrals',
-    },
+      to: '/topreferrals'
+    }
   ];
 };
 

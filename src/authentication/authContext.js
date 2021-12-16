@@ -8,9 +8,9 @@ export default dispatch => ({
     let errMsg = '';
 
     try {
-      const res = await api.post('/auth/login/generate_token', data);
-      const { tokenType, accessToken } = res.data;
-      const userToken = `${tokenType} ${accessToken}`;
+      const res = await api.post('/api/signin', data);
+      const { accessToken } = res.data;
+      const userToken = `Bearer ${accessToken}`;
       api.defaults.headers['Authorization'] = userToken;
 
       await AsyncStorage.setItem('userToken', userToken);
