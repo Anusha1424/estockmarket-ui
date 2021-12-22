@@ -1,16 +1,26 @@
 const NavItems = () => {
   return [
     {
-      title: 'home',
+      title: 'Company List',
       to: '/',
       htmlBefore: '<i class="material-icons">edit</i>',
-      htmlAfter: ''
+      htmlAfter: '',
     },
     {
-      title: 'Top Referrals',
+      title: 'Add Company',
       htmlBefore: '<i class="material-icons">vertical_split</i>',
-      to: '/topreferrals'
-    }
+      to: '/addCompany',
+    },
+    {
+      title: 'Add Stock',
+      htmlBefore: '<i class="material-icons">vertical_split</i>',
+      to: '/addStock',
+    },
+    {
+      title: 'Search Stocks',
+      htmlBefore: '<i class="material-icons">vertical_split</i>',
+      to: '/searchStocks',
+    },
   ];
 };
 

@@ -5,7 +5,7 @@ import {
   authState,
   AuthContext,
   authContextValue,
-  loadToken
+  loadToken,
 } from '../authentication';
 
 // Layout Types
@@ -13,6 +13,11 @@ import { DefaultLayout } from '../layouts';
 import Home from '../views/Home';
 import TopReferrals from './../components/common/TopReferrals';
 import Login from '../components/login/Login';
+import CompanyList from '../views/CompanyList';
+import EditCompany from '../views/EditCompany';
+import AddStock from '../views/AddStock';
+import SearchStocks from '../views/SearchStocks';
+import ViewCompanyStocks from '../views/ViewCompanyStocks';
 
 export default function App() {
   const [state, dispatch] = React.useReducer(authReducer, authState);
@@ -38,14 +43,21 @@ export default function App() {
       ) : (
         <Routes>
           {!state.userToken ? (
-            <Route path='/' element={<Login />} />
+            <Route path="/" element={<Login />} />
           ) : (
             <Route element={<DefaultLayout />}>
-              <Route path='/' element={<Home />} />
-              <Route path='/topreferrals' element={<TopReferrals />} />
+              <Route path="/" element={<CompanyList />} />
+              <Route path="/addCompany" element={<EditCompany />} />
+              <Route path="/editCompany/:id" element={<EditCompany />} />
+              <Route path="/addStock" element={<AddStock />} />
+              <Route
+                path="/viewCompanyStocks"
+                element={<ViewCompanyStocks />}
+              />
+              <Route path="/searchStocks" element={<SearchStocks />} />
             </Route>
           )}
-          <Route path='*' element={<Login />} />
+          <Route path="*" element={<Login />} />
         </Routes>
       )}
     </AuthContext.Provider>
