@@ -26,7 +26,7 @@ export default function App() {
 
   React.useEffect(() => {
     loadInitData();
-  }, []);
+  }, [state.userToken]);
   const loadInitData = async () => {
     setLoading(true);
     try {

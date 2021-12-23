@@ -7,17 +7,44 @@ import { api } from '../utils/api';
 
 const AuthContext = React.createContext();
 
-const loadToken = async dispatch => {
+const loadToken = async (dispatch) => {
   try {
     const userToken = await AsyncStorage.getItem('userToken');
-    if (userToken) {
-      api.defaults.headers['Authorization'] = userToken;
 
+    if (userToken) {
+      try {
+        api.defaults.headers['Authorization'] = userToken;
+
+        const res = await api.post('/api/valid/token');
+        const status = res.data;
+        if (!status) {
+          dispatch({
+            type: 'SIGN_IN',
+            token: null,
+          });
+        } else {
+          dispatch({
+            type: 'SIGN_IN',
+            token: userToken,
+          });
+        }
+      } catch (error) {
+        dispatch({
+          type: 'SIGN_IN',
+          token: null,
+        });
+      }
+    } else {
       dispatch({
         type: 'SIGN_IN',
-        token: userToken
+        token: null,
       });
     }
-  } catch (error) {}
+  } catch (error) {
+    dispatch({
+      type: 'SIGN_IN',
+      token: null,
+    });
+  }
 };
 export { AuthContext, authState, authReducer, authContextValue, loadToken };
