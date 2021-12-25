@@ -9,10 +9,12 @@ import {
   NavItem,
   NavLink
 } from 'shards-react';
-import { AuthContext } from '../../../../authentication';
+import { UserContext ,AuthContext} from '../../../../authentication';
 
 export default function UserActions() {
-  const { signOut } = React.useContext(AuthContext);
+  const { signOut, } = React.useContext(AuthContext);
+  const { user } = React.useContext(UserContext);
+
 
   const [visible, setVisible] = React.useState(false);
 
@@ -30,7 +32,7 @@ export default function UserActions() {
           }
           alt='Icon'
         />
-        <span className='d-none d-md-inline-block'>Sierra Brooks</span>
+        <span className='d-none d-md-inline-block'>{user && user.name}</span>
       </DropdownToggle>
       <Collapse tag={DropdownMenu} right small open={visible}>
         <DropdownItem tag={Link} to='user-profile'>

@@ -12,11 +12,45 @@ import Select, { AriaOnFocus } from 'react-select';
 import MySelect from '../components/MySelect';
 import { DatePickerField } from '../components/DatePickerField';
 import Table from 'react-bootstrap/Table';
+import { api } from '../utils/api';
+import moment from 'moment';
 
-export default function AddStock() {
+export default function SearchStock() {
   let params = useParams();
-  const handleSubmit = (values) => {
+  const [companyData,setCompanyData] = React.useState([])
+  const getData = async () =>{
+    try {
+      const resp = await api.get("market/api/v1.0/market/company/getall");
+      if(resp.data) {
+        let temp =[]
+        resp.data.map((com) =>{
+          temp.push({value:com.companyCode,label:com.name})
+        })
+        setCompanyData(temp);
+      }
+      
+    } catch (error) {
+      console.log(error)
+    }
+    
+}
+
+React.useEffect(()=>{
+  getData()
+},[])
+
+
+const [data,setData] = React.useState([]);
+
+
+  const handleSubmit = async (values) => {
     console.log(JSON.stringify(values));
+   var fromDate =  moment(Date.parse(values.fromDate)).format("yyyy-MM-DD");
+   var toDate =  moment(Date.parse(values.toDate)).format("yyyy-MM-DD")
+
+const resp = await api.get(`stock/api/v1.0/market/stock/get/${values.companyCode[0].value}/${fromDate}/${toDate}`);
+    setData(resp.data);
+
   };
   const schema = yup.object().shape({
     companyCode: yup
@@ -32,15 +66,6 @@ export default function AddStock() {
     fromDate: yup.date().required(),
     toDate: yup.date().required(),
   });
-
-  const options = [
-    { value: 'Food', label: 'Food' },
-    { value: 'Being Fabulous', label: 'Being Fabulous' },
-    { value: 'Ken Wheeler', label: 'Ken Wheeler' },
-    { value: 'ReasonML', label: 'ReasonML' },
-    { value: 'Unicorns', label: 'Unicorns' },
-    { value: 'Kittens', label: 'Kittens' },
-  ];
 
   return (
     <Container fluid className="main-content-container px-4 pb-4">
@@ -73,7 +98,7 @@ export default function AddStock() {
                   onBlur={setFieldTouched}
                   error={errors.companyCode}
                   touched={touched.companyCode}
-                  options={options}
+                  options={companyData}
                   name="companyCode"
                   label="Company Code"
                 />
@@ -106,20 +131,36 @@ export default function AddStock() {
         }}
       </Formik>
       <br></br>
+
+
+
+
+
+      <Row className="mb-3">
+          <Col>Minimum : {data.min}</Col>
+          <Col>Maximum : {data.max}</Col>
+          <Col>Average : {data.average}</Col>
+
+      </Row>
       <Table striped bordered hover>
         <thead>
           <tr>
             <th>Sno</th>
-            <th>Compnay Name</th>
-            <th>Compnay code</th>
+            <th>Stock Price</th>
+            <th>Date time</th>
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td>1</td>
-            <td>Mark</td>
-            <td>Otto</td>
+          {data.stockList && data.stockList.map((d,i)=>{
+            return(
+              <tr>
+            <td>{i+1}</td>
+            <td>{d.price}</td>
+            <td>{d.stockDate ? moment(Date.parse(d.stockDate)).format("DD/MM/YYYY hh:mm a") : ""}</td>
           </tr>
+            );
+          })}
+          
         </tbody>
       </Table>
     </Container>

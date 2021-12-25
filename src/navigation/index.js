@@ -6,6 +6,7 @@ import {
   AuthContext,
   authContextValue,
   loadToken,
+  UserContext
 } from '../authentication';
 
 // Layout Types
@@ -38,6 +39,8 @@ export default function App() {
   };
   return (
     <AuthContext.Provider value={authContextValue(dispatch)}>
+          <UserContext.Provider value={state}>
+
       {loading ? (
         <p>loading...</p>
       ) : (
@@ -51,7 +54,7 @@ export default function App() {
               <Route path="/editCompany/:id" element={<EditCompany />} />
               <Route path="/addStock" element={<AddStock />} />
               <Route
-                path="/viewCompanyStocks"
+                path="/viewCompanyStocks/:id"
                 element={<ViewCompanyStocks />}
               />
               <Route path="/searchStocks" element={<SearchStocks />} />
@@ -60,6 +63,7 @@ export default function App() {
           <Route path="*" element={<Login />} />
         </Routes>
       )}
+      </UserContext.Provider>
     </AuthContext.Provider>
   );
 }

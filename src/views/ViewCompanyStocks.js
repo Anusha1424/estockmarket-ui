@@ -1,148 +1,66 @@
 import React from 'react';
 import { Container, Button } from 'shards-react';
 import { useParams, useNavigate } from 'react-router-dom';
-import Form from 'react-bootstrap/Form';
-import { Formik, Form as NewForm } from 'formik';
 import * as yup from 'yup';
 import _ from 'lodash';
+import { api } from '../utils/api';
+import Table from 'react-bootstrap/Table';
+import moment from 'moment';
+import { Col, Row } from 'react-bootstrap';
+
 
 export default function ViewCompanyStocks() {
   let params = useParams();
-  const handleSubmit = (values) => {
-    console.log(JSON.stringify(values));
-  };
-  const schema = yup.object().shape({
-    companyCode: yup.string().required(),
-    name: yup.string().required(),
-    ceo: yup.string().required(),
-    turnover: yup.string().required(),
-    stockExchange: yup.string().required(),
-    website: yup.string().required(),
-  });
+  
+  const [data,setData] = React.useState({})
+
+  const getData = async () =>{
+    try {
+      const resp = await api.get(`stock/api/v1.0/market/stock/getAllByCompanyCode/${params.id}`);
+      setData(resp.data)
+    } catch (error) {
+      console.log(error)
+    }
+    
+}
+  React.useEffect(()=>{
+    getData()
+  },[])
+ 
 
   return (
     <Container fluid className="main-content-container px-4 pb-4">
-      <Formik
-        validationSchema={schema}
-        onSubmit={handleSubmit}
-        initialValues={{
-          companyCode: 'Mark',
-          name: 'Otto',
-          ceo: 'ceo',
-          turnover: 'turn',
-          stockExchange: '',
-          website: 'hello',
-        }}
-      >
-        {({
-          handleSubmit,
-          handleChange,
-          handleBlur,
-          values,
-          touched,
-          isValid,
-          errors,
-          isSubmitting,
-        }) => {
-          console.log(touched);
-          return (
-            <Form onSubmit={handleSubmit}>
-              <Form.Group className="mb-3" controlId="companyCode">
-                <Form.Label>Company Code</Form.Label>
-                <Form.Control
-                  type="text"
-                  name="companyCode"
-                  placeholder="Enter Company Code"
-                  value={values.companyCode}
-                  onChange={handleChange}
-                  isInvalid={!!errors.companyCode}
-                />
-                <Form.Control.Feedback type="invalid">
-                  Enter Company Code {errors.companyCode}
-                </Form.Control.Feedback>
-              </Form.Group>
+      
+      <Row className="mb-3">
+          <Col>Minimum : {data.min}</Col>
+          <Col>Maximum : {data.max}</Col>
+          <Col>Average : {data.average}</Col>
 
-              <Form.Group className="mb-3" controlId="name">
-                <Form.Label>Company Name</Form.Label>
-                <Form.Control
-                  type="text"
-                  placeholder="Enter Company Name"
-                  name="name"
-                  value={values.name}
-                  onChange={handleChange}
-                  isInvalid={!!errors.name}
-                />
-                <Form.Control.Feedback type="invalid">
-                  Enter Company Name
-                </Form.Control.Feedback>
-              </Form.Group>
-              <Form.Group className="mb-3" controlId="website">
-                <Form.Label>Website</Form.Label>
-                <Form.Control
-                  type="text"
-                  placeholder="Enter Website"
-                  name="website"
-                  value={values.website}
-                  onChange={handleChange}
-                  isInvalid={!!errors.website}
-                />
-                <Form.Control.Feedback type="invalid">
-                  Enter Website
-                </Form.Control.Feedback>
-              </Form.Group>
+      </Row>
+      <Table striped bordered hover>
+        <thead>
+          <tr>
+            <th>Sno</th>
+            <th>Stock Price</th>
+            <th>Date time</th>
+          </tr>
+        </thead>
+        <tbody>
+          {data.stockList && data.stockList.map((d,i)=>{
+            return(
+              <tr>
+            <td>{i+1}</td>
+            <td>{d.price}</td>
+            <td>{d.stockDate ? moment(Date.parse(d.stockDate)).format("DD/MM/YYYY hh:mm a") : ""}</td>
+            
+          </tr>
+            );
 
-              <Form.Group className="mb-3" controlId="ceo">
-                <Form.Label>CEO</Form.Label>
-                <Form.Control
-                  type="text"
-                  placeholder="Enter CEO Name"
-                  name="ceo"
-                  value={values.ceo}
-                  onChange={handleChange}
-                  isInvalid={!!errors.ceo}
-                />
-                <Form.Control.Feedback type="invalid">
-                  Enter CEO Name
-                </Form.Control.Feedback>
-              </Form.Group>
-
-              <Form.Group className="mb-3" controlId="turnover">
-                <Form.Label>turnover</Form.Label>
-                <Form.Control
-                  type="text"
-                  placeholder="Enter turnover"
-                  name="turnover"
-                  value={values.turnover}
-                  onChange={handleChange}
-                  isInvalid={!!errors.turnover}
-                />
-                <Form.Control.Feedback type="invalid">
-                  Enter Turnover
-                </Form.Control.Feedback>
-              </Form.Group>
-
-              <Form.Group className="mb-3" controlId="stockExchange">
-                <Form.Label>stockExchange</Form.Label>
-                <Form.Control
-                  type="text"
-                  placeholder="Enter Stock Exchange Name"
-                  name="stockExchange"
-                  value={values.stockExchange}
-                  onChange={handleChange}
-                  isInvalid={!!errors.stockExchange}
-                />
-                <Form.Control.Feedback type="invalid">
-                  Enter Stock Exchange Name
-                </Form.Control.Feedback>
-              </Form.Group>
-
-              <Button variant="primary" type="submit">
-                Submit
-              </Button>
-            </Form>
-          );
-        }}
-      </Formik>
+            
+          })}
+          
+        </tbody>
+      </Table>
     </Container>
   );
 }

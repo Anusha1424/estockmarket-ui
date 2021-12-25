@@ -6,6 +6,8 @@ import React from 'react';
 import { api } from '../utils/api';
 
 const AuthContext = React.createContext();
+const UserContext = React.createContext();
+
 
 const loadToken = async (dispatch) => {
   try {
@@ -16,16 +18,18 @@ const loadToken = async (dispatch) => {
         api.defaults.headers['Authorization'] = userToken;
 
         const res = await api.post('/api/valid/token');
-        const status = res.data;
-        if (!status) {
+        const user = res.data.user;
+        if (!user) {
           dispatch({
             type: 'SIGN_IN',
             token: null,
+
           });
         } else {
           dispatch({
             type: 'SIGN_IN',
             token: userToken,
+            user:user
           });
         }
       } catch (error) {
@@ -47,4 +51,4 @@ const loadToken = async (dispatch) => {
     });
   }
 };
-export { AuthContext, authState, authReducer, authContextValue, loadToken };
+export { AuthContext, authState, authReducer, authContextValue, loadToken,UserContext };

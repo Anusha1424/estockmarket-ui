@@ -1,4 +1,5 @@
 {
   "isLoading": true,
-  "userToken": null
+  "userToken": null,
+  "user":null
 }

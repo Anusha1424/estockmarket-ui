@@ -9,7 +9,8 @@ export default (prevState, action) => {
     case 'SIGN_IN':
       return {
         ...prevState,
-        userToken: action.token
+        userToken: action.token,
+        user:action.user
       };
     case 'SIGN_OUT':
       return {

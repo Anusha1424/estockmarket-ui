@@ -8,6 +8,7 @@ export default dispatch => ({
     let errMsg = '';
 
     try {
+      delete api.defaults.headers.Authorization;
       const res = await api.post('/api/signin', data);
       const { accessToken } = res.data;
       const userToken = `Bearer ${accessToken}`;

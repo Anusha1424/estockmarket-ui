@@ -7,11 +7,48 @@ import * as yup from 'yup';
 import _ from 'lodash';
 import Select, { AriaOnFocus } from 'react-select';
 import MySelect from '../components/MySelect';
+import { api } from '../utils/api';
 
 export default function AddStock() {
   let params = useParams();
-  const handleSubmit = (values) => {
+
+
+  const [data,setData] = React.useState([])
+  const getData = async () =>{
+    try {
+      const resp = await api.get("market/api/v1.0/market/company/getall");
+      if(resp.data) {
+        let temp =[]
+        resp.data.map((com) =>{
+          temp.push({value:com.companyCode,label:com.name})
+        })
+        setData(temp);
+      }
+      
+    } catch (error) {
+      console.log(error)
+    }
+    
+}
+
+
+
+React.useEffect(()=>{
+  getData()
+},[])
+
+
+  const handleSubmit = async (values) => {
     console.log(JSON.stringify(values));
+    var stock = {
+      companyCode:values.companyCode[0].value,
+      price:values.stockPrice
+    }
+    const resp = await api.post(`stock/api/v1.0/market/stock/add`,{
+      ...stock,
+      
+    });
+   
   };
   const schema = yup.object().shape({
     companyCode: yup
@@ -68,7 +105,7 @@ export default function AddStock() {
                   onBlur={setFieldTouched}
                   error={errors.companyCode}
                   touched={touched.companyCode}
-                  options={options}
+                  options={data}
                   name="companyCode"
                   label="Company Code"
                 />

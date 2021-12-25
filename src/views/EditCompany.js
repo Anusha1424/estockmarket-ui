@@ -5,12 +5,39 @@ import Form from 'react-bootstrap/Form';
 import { Formik, Form as NewForm } from 'formik';
 import * as yup from 'yup';
 import _ from 'lodash';
+import { api } from '../utils/api';
 
 export default function EditCompany() {
   let params = useParams();
-  const handleSubmit = (values) => {
-    console.log(JSON.stringify(values));
-  };
+ 
+  const [data,setData] = React.useState({});
+  const [loader,setLoader] = React.useState(false);
+
+  const handleSubmit =async (values) => {
+    var company = values;
+ const resp = await api.post(`market/api/v1.0/market/company/register`,{
+   id:data.id || null,
+   ...company
+ });
+
+};
+
+  const getData = async () =>{
+    try {
+      setLoader(true);
+      const resp = await api.get(`market/api/v1.0/market/company/info/${params.id}`);
+      setData(resp.data);
+      setLoader(false);
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  React.useEffect(()=>{
+   
+    getData()
+   
+  },[])
   const schema = yup.object().shape({
     companyCode: yup.string().required(),
     name: yup.string().required(),
@@ -22,16 +49,17 @@ export default function EditCompany() {
 
   return (
     <Container fluid className="main-content-container px-4 pb-4">
+      {loader ? <div></div> : 
       <Formik
         validationSchema={schema}
         onSubmit={handleSubmit}
         initialValues={{
-          companyCode: 'Mark',
-          name: 'Otto',
-          ceo: 'ceo',
-          stockExchange: '',
-          website: 'hello',
-          turnover: 0,
+          companyCode:data.companyCode || "" ,
+          name: data.name || "",
+          ceo: data.ceo || "",
+          stockExchange: data.stockExchange || "",
+          website: data.website || "",
+          turnover:data.turnover ||  0,
         }}
       >
         {({
@@ -142,7 +170,7 @@ export default function EditCompany() {
             </Form>
           );
         }}
-      </Formik>
+      </Formik>}
     </Container>
   );
 }
