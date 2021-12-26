@@ -19,6 +19,7 @@ import EditCompany from '../views/EditCompany';
 import AddStock from '../views/AddStock';
 import SearchStocks from '../views/SearchStocks';
 import ViewCompanyStocks from '../views/ViewCompanyStocks';
+import UserProfileLite from '../views/UserProfileLite';
 
 export default function App() {
   const [state, dispatch] = React.useReducer(authReducer, authState);
@@ -58,6 +59,7 @@ export default function App() {
                 element={<ViewCompanyStocks />}
               />
               <Route path="/searchStocks" element={<SearchStocks />} />
+              <Route path="/userProfile" element={<UserProfileLite />} />
             </Route>
           )}
           <Route path="*" element={<Login />} />

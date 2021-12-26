@@ -35,7 +35,7 @@ export default function UserActions() {
         <span className='d-none d-md-inline-block'>{user && user.name}</span>
       </DropdownToggle>
       <Collapse tag={DropdownMenu} right small open={visible}>
-        <DropdownItem tag={Link} to='user-profile'>
+        <DropdownItem tag={Link} to='userProfile'>
           <i className='material-icons'>&#xE7FD;</i> Profile
         </DropdownItem>
 

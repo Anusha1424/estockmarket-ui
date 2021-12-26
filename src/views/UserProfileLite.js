@@ -1,24 +1,51 @@
 import React from "react";
-import { Container, Row, Col } from "shards-react";
+import {Card,CardHeader,ListGroup,ListGroupItem, Container, Row, Col } from "shards-react";
+import { UserContext } from "../authentication";
 
-import PageTitle from "../components/common/PageTitle";
-import UserDetails from "../components/user-profile-lite/UserDetails";
-import UserAccountDetails from "../components/user-profile-lite/UserAccountDetails";
+const UserProfileLite = () => {
 
-const UserProfileLite = () => (
+  const { user } = React.useContext(UserContext);
+
+return(
   <Container fluid className="main-content-container px-4">
-    <Row noGutters className="page-header py-4">
-      <PageTitle title="User Profile" subtitle="Overview" md="12" className="ml-sm-auto mr-sm-auto" />
-    </Row>
+    
     <Row>
-      <Col lg="4">
-        <UserDetails />
-      </Col>
-      <Col lg="8">
-        <UserAccountDetails />
-      </Col>
+        {/* <UserAccountDetails /> */}
+        <Card small className="mb-4">
+          <CardHeader className="border-bottom">
+            <h6 className="m-0">Profile</h6>
+          </CardHeader>
+          <ListGroup flush>
+            <ListGroupItem className="p-3">
+              <Row style={{padding:5}}>
+                  <Col md="6">
+                    First Name
+                  </Col>
+                  <Col md="6">
+                  {user.name}
+                  </Col>
+              </Row>
+                <Row style={{padding:5}}>
+                <Col md="6">
+                Last Name
+                </Col>
+                <Col md="6">
+                {user.lastName}
+                </Col>
+                </Row>
+                <Row style={{padding:5}}>
+                <Col md="6">
+               Email
+                </Col>
+                <Col md="6">
+                {user.email}
+                </Col>
+                </Row>
+          </ListGroupItem>
+    </ListGroup>
+  </Card>
     </Row>
-  </Container>
-);
+  </Container>);
+}
 
 export default UserProfileLite;
